@@ -18,19 +18,7 @@ export default function Home() {
   const { isAuthenticated, isLoading } = useAuth();
   const [selectedNote, setSelectedNote] = useState<any>(null);
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
-    }
-  }, [isAuthenticated, isLoading, toast]);
+  // With Clerk, authentication is handled by ClerkProvider
 
   if (isLoading) {
     return (

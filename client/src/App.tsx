@@ -3,7 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useAuth } from "@/hooks/useAuth";
+import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-react';
 import { syncManager } from "@/lib/sync";
 import { useEffect } from "react";
 import NotFound from "@/pages/not-found";
@@ -11,29 +11,24 @@ import Landing from "@/pages/Landing";
 import Home from "@/pages/Home";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
   useEffect(() => {
-    // Start sync manager when authenticated
-    if (isAuthenticated) {
-      syncManager.startSync();
-    }
+    // Start sync manager when component mounts
+    syncManager.startSync();
     
     return () => {
       syncManager.stopSync();
     };
-  }, [isAuthenticated]);
+  }, []);
 
   return (
     <div className="dark">
       <Switch>
-        {isLoading || !isAuthenticated ? (
+        <SignedOut>
           <Route path="/" component={Landing} />
-        ) : (
-          <>
-            <Route path="/" component={Home} />
-          </>
-        )}
+        </SignedOut>
+        <SignedIn>
+          <Route path="/" component={Home} />
+        </SignedIn>
         <Route component={NotFound} />
       </Switch>
     </div>
@@ -41,13 +36,21 @@ function Router() {
 }
 
 function App() {
+  const publishableKey = "pk_test_dXNlZnVsLWJ1bGxkb2ctMjUuY2xlcmsuYWNjb3VudHMuZGV2JA";
+  
+  if (!publishableKey) {
+    throw new Error('Missing Clerk Publishable Key');
+  }
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ClerkProvider publishableKey={publishableKey}>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ClerkProvider>
   );
 }
 

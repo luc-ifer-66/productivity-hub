@@ -1,33 +1,9 @@
-import { useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
+import { SignInButton } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Smartphone, Wifi, Users } from "lucide-react";
 
 export default function Landing() {
-  const { toast } = useToast();
-  const { isAuthenticated, isLoading } = useAuth();
-
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      window.location.href = "/";
-    }
-  }, [isAuthenticated, isLoading]);
-
-  const handleLogin = () => {
-    window.location.href = "/api/login";
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse">
-          <div className="w-8 h-8 bg-primary rounded-lg"></div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -44,9 +20,11 @@ export default function Landing() {
               <h1 className="text-xl font-bold text-foreground">ProductivityHub</h1>
             </div>
             
-            <Button onClick={handleLogin} data-testid="button-login">
-              Sign In
-            </Button>
+            <SignInButton mode="modal">
+              <Button data-testid="button-login">
+                Sign In
+              </Button>
+            </SignInButton>
           </div>
         </div>
       </header>
@@ -62,14 +40,15 @@ export default function Landing() {
             Manage your tasks, track expenses, and organize notes in one seamless, 
             offline-first application that works everywhere.
           </p>
-          <Button 
-            size="lg" 
-            onClick={handleLogin}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-lg"
-            data-testid="button-get-started"
-          >
-            Get Started Free
-          </Button>
+          <SignInButton mode="modal">
+            <Button 
+              size="lg" 
+              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3 text-lg"
+              data-testid="button-get-started"
+            >
+              Get Started Free
+            </Button>
+          </SignInButton>
         </div>
 
         {/* Features */}
@@ -152,13 +131,14 @@ export default function Landing() {
               Install ProductivityHub on your phone for the full app experience. 
               Access your data offline and sync seamlessly when you're back online.
             </p>
-            <Button 
-              size="lg" 
-              onClick={handleLogin}
-              data-testid="button-start-now"
-            >
-              Start Now
-            </Button>
+            <SignInButton mode="modal">
+              <Button 
+                size="lg" 
+                data-testid="button-start-now"
+              >
+                Start Now
+              </Button>
+            </SignInButton>
           </div>
         </div>
       </div>

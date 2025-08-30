@@ -4,6 +4,7 @@ import { PWAInstall } from './PWAInstall';
 import { useAuth } from '@/hooks/useAuth';
 import { useOffline } from '@/hooks/useOffline';
 import { useSyncStatus } from '@/lib/sync';
+import { useClerk } from '@clerk/clerk-react';
 import { CheckCircle, RotateCcw, Wifi, WifiOff, User, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,6 +21,7 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const { user } = useAuth();
+  const { signOut } = useClerk();
   const { isOnline } = useOffline();
   const { isSyncing } = useSyncStatus();
   const [showStatus, setShowStatus] = useState(false);
@@ -98,13 +100,13 @@ export function Layout({ children }: LayoutProps) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2" data-testid="button-user-menu">
                     <Avatar className="w-8 h-8">
-                      <AvatarImage src={user?.profileImageUrl || ''} alt={user?.firstName || 'User'} />
+                      <AvatarImage src={user?.imageUrl || ''} alt={user?.firstName || 'User'} />
                       <AvatarFallback className="bg-primary text-primary-foreground text-sm">
                         {getInitials(user?.firstName, user?.lastName)}
                       </AvatarFallback>
                     </Avatar>
                     <span className="hidden sm:inline text-foreground" data-testid="text-username">
-                      {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email || 'User'}
+                      {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.primaryEmailAddress?.emailAddress || 'User'}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -119,7 +121,7 @@ export function Layout({ children }: LayoutProps) {
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     className="flex items-center gap-2 text-destructive focus:text-destructive" 
-                    onClick={() => window.location.href = '/api/logout'}
+                    onClick={() => signOut()}
                     data-testid="menu-logout"
                   >
                     <LogOut className="w-4 h-4" />
