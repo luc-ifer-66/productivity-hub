@@ -6,7 +6,7 @@
   "installCommand": "npm install",
   "functions": {
     "api/index.ts": {
-      "runtime": "nodejs18.20.8"
+      "runtime": "nodejs24.7.0"
     }
   },
   "rewrites": [
