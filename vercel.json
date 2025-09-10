@@ -4,11 +4,6 @@
   "buildCommand": "vite build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
-  "functions": {
-    "api/index.ts": {
-      "runtime": "nodejs22.19.0"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
